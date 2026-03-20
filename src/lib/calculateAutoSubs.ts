@@ -58,8 +58,8 @@ export function calculateAutoSubs(team: PlayerPick[]): PlayerPick[] {
         const pickIndex = team.findIndex((p) => p.element === pick.element);
         // Perform the substitution in the cloned team
         if (subIndex !== -1 && pickIndex !== -1) {
-          originalTeam[subIndex].position = team[pickIndex].position;
-          originalTeam[pickIndex].position = team[subIndex].position;
+          originalTeam[subIndex]!.position = team[pickIndex]!.position;
+          originalTeam[pickIndex]!.position = team[subIndex]!.position;
 
           // Check if the updated team meets formation requirements
           if (isFormationValid(originalTeam)) {
@@ -78,11 +78,11 @@ export function calculateAutoSubs(team: PlayerPick[]): PlayerPick[] {
         const pickIndex = team.findIndex((p) => p.element === pick.element);
         if (replacementIndex !== -1 && pickIndex !== -1) {
           // Swap their positions
-          const tempPosition = team[pickIndex].position;
-          team[pickIndex].position = team[replacementIndex].position;
-          team[replacementIndex].position = tempPosition;
-          team[replacementIndex].isSub = false;
-          team[replacementIndex].willBeAutosubbed = true;
+          const tempPosition = team[pickIndex]!.position;
+          team[pickIndex]!.position = team[replacementIndex]!.position;
+          team[replacementIndex]!.position = tempPosition;
+          team[replacementIndex]!.isSub = false;
+          team[replacementIndex]!.willBeAutosubbed = true;
         }
 
         pick.isSub = true;

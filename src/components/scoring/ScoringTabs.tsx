@@ -1,9 +1,7 @@
-import React from "react";
 import { TabGroup, TabPanel, TabPanels } from "@headlessui/react";
 import { LeagueData } from "@/models/league";
 import { GameStatusData } from "@/models/game";
 import { ScoringData } from "@/models/scoringData";
-import LoadingSpinner from "@/components/common/LoadingSpinner";
 import TabHeader from "@/components/common/TabHeader";
 import RefreshButton from "@/components/scoring/RefreshButton";
 import ScoringPage from "@/components/scoring/ScoringPage";

@@ -16,7 +16,7 @@ export default function Header(): ReactNode {
   //make the mob background transparent if the path is not /scoring as we have a header component that handles it for us
   const backgroundTransparent = !location.pathname.startsWith("/scoring/");
   const handleBackClick = () => {
-    if (teamId) navigate({ to: `/team/${teamId}` });
+    if (teamId) navigate({ to: "/team/$teamId", params: { teamId } });
     else {
       window.history.back();
     }
@@ -32,7 +32,7 @@ export default function Header(): ReactNode {
         </div>
         <div className="justify-start items-center gap-2 flex md:z-10">
           {teamId && (
-            <Link to={teamId ? `/team/${teamId}` : `/welcome`}>
+            <Link to="/team/$teamId" params={{ teamId: teamId! }}>
               <StyledButton label="MY LEAGUES" secondary={true} type="button">
                 My Leagues
               </StyledButton>
@@ -69,7 +69,7 @@ export default function Header(): ReactNode {
             <div className="w-[35px] h-[35px] px-3.5 py-3 bg-button-light-bg-20  bg-button-light-secondary dark:bg-button-dark-bg bg-blend-overlay  rounded flex-col justify-center items-center gap-[5px] inline-flex">
               {" "}
               {teamId && (
-                <Link to={teamId ? `/team/${teamId}` : `/welcome`}>
+                <Link to="/team/$teamId" params={{ teamId: teamId! }}>
                   <div className="w-5 h-5 relative flex justify-center items-center">
                     <Menu mode={theme} />
                   </div>

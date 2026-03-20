@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { FplTeamResponse } from "@/models/fplTeamResponse";
 import { LeagueData } from "@/models/league";
