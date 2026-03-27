@@ -8,6 +8,7 @@ import {
   fetchGameWeekFixtures,
   fetchWeeklyScoring,
   fetchWeeklyTeam,
+  fetchLeagueScoring,
 } from "@/api/helpers";
 
 const MINUTE = 60 * 1000;
@@ -86,32 +87,17 @@ export function useRefreshQueries() {
   return () => queryClient.invalidateQueries();
 }
 
-// Takes an array of { id: league_entry_id, entryId: team_entry_id } pairs
-// Returns a Record keyed by league_entry id (matching how leaguePage lookups work)
+// Fetches scoring data for all teams in a league via a single batch endpoint
+// Returns a Record keyed by league_entry id
 export function useAllLeagueScoringData(
-  entries: Array<{ id: number; entryId: number }>,
+  leagueId: number,
   gameweek: number,
 ) {
   return useQuery({
-    queryKey: ["allLeagueScoring", entries, gameweek],
-    queryFn: async () => {
-      const settled = await Promise.allSettled(
-        entries
-          .filter((e) => e.entryId)
-          .map(async (entry) => {
-            const data = await fetchScoringData(entry.entryId, gameweek);
-            return { id: entry.id, data };
-          }),
-      );
-      const results: Record<number, Awaited<ReturnType<typeof fetchScoringData>>> = {};
-      for (const result of settled) {
-        if (result.status === "fulfilled") {
-          results[result.value.id] = result.value.data;
-        }
-      }
-      return results;
-    },
-    staleTime: 30 * 1000,
-    enabled: entries.length > 0 && !!gameweek,
+    queryKey: ["allLeagueScoring", leagueId, gameweek],
+    queryFn: () => fetchLeagueScoring(leagueId, gameweek),
+    enabled: !!leagueId && !!gameweek,
+    placeholderData: (previousData) => previousData,
+    gcTime: 5 * MINUTE,
   });
 }

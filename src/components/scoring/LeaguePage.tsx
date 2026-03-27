@@ -7,13 +7,11 @@ import LoadingSpinner from "@/components/common/LoadingSpinner";
 interface LeaguePageProps {
   gameweek: number;
   leagueData: LeagueData;
+  leagueId: number;
 }
 
-export default function LeaguePage({ gameweek, leagueData }: LeaguePageProps) {
-  const entries = leagueData.league_entries
-    .filter((e) => e.entry_id)
-    .map((e) => ({ id: e.id, entryId: e.entry_id }));
-  const { data: teamsScoringData, isPending } = useAllLeagueScoringData(entries, gameweek);
+export default function LeaguePage({ gameweek, leagueData, leagueId }: LeaguePageProps) {
+  const { data: teamsScoringData, isPending, isFetching } = useAllLeagueScoringData(leagueId, gameweek);
 
   const enrichedScoringData = useMemo(() => {
     if (!teamsScoringData) return null;
@@ -29,7 +27,7 @@ export default function LeaguePage({ gameweek, leagueData }: LeaguePageProps) {
     return data;
   }, [teamsScoringData, leagueData.league_entries]);
 
-  if (isPending || !enrichedScoringData) {
+  if (isPending && !enrichedScoringData) {
     return (
       <div className="flex justify-center mt-8">
         <LoadingSpinner />
@@ -37,8 +35,15 @@ export default function LeaguePage({ gameweek, leagueData }: LeaguePageProps) {
     );
   }
 
+  if (!enrichedScoringData) return null;
+
   return (
     <div className="min-h-[80vh] flex flex-col items-center p-6">
+      {isFetching && (
+        <div className="text-center text-light-60 dark:text-dark-60 text-xs font-medium font-roobertMono uppercase tracking-wide animate-pulse mb-4">
+          Updating...
+        </div>
+      )}
       <div className="w-full md:w-2/3 flex-col justify-start items-center gap-8 md:gap-20 inline-flex">
         <div className="flex flex-col justify-center gap-8 md:gap-16 w-full">
           {leagueData.matches
