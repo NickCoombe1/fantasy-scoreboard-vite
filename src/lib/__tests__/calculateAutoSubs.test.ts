@@ -4,23 +4,24 @@ import { ElementType } from "@/models/playerData";
 import { PlayerPick } from "@/models/playerPick";
 
 function makePick(overrides: Partial<PlayerPick> & { element: number; position: number; fieldPosition: ElementType }): PlayerPick {
+  const { element, position, fieldPosition, ...rest } = overrides;
   return {
-    id: overrides.element,
-    element: overrides.element,
-    position: overrides.position,
+    id: element,
+    element,
+    position,
     multiplier: 1,
-    isSub: overrides.position > 11,
+    isSub: position > 11,
     points: 5,
-    name: `Player ${overrides.element}`,
+    name: `Player ${element}`,
     hasPlayed: true,
     willBeAutosubbed: false,
     isInjured: false,
     wasSubbedOn: false,
     yellowCarded: false,
     redCarded: false,
-    fieldPosition: overrides.fieldPosition,
+    fieldPosition,
     gameStatus: { isFinished: true, isInProgress: false },
-    ...overrides,
+    ...rest,
   };
 }
 

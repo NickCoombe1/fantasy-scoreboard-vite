@@ -11,7 +11,7 @@ function RootLayout() {
       <div
         className="absolute inset-0 z-0 pointer-events-none mix-blend-difference"
         style={{
-          backgroundImage: 'url("/Lights.png")',
+          backgroundImage: 'url("/Lights.webp")',
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}

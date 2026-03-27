@@ -11,6 +11,20 @@
 
 @font-face {
   font-family: "Roobert";
+  src: url("/fonts/DP_roobert_TRIAL/RoobertTRIAL-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Roobert";
+  src: url("/fonts/DP_roobert_TRIAL/RoobertTRIAL-SemiBold.woff2") format("woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Roobert";
   src: url("/fonts/DP_roobert_TRIAL/RoobertTRIAL-Bold.woff2") format("woff2");
   font-weight: 700;
   font-display: swap;

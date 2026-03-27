@@ -97,14 +97,18 @@ export function useAllLeagueScoringData(
   return useQuery({
     queryKey: ["allLeagueScoring", entries, gameweek],
     queryFn: async () => {
+      const settled = await Promise.allSettled(
+        entries
+          .filter((e) => e.entryId)
+          .map(async (entry) => {
+            const data = await fetchScoringData(entry.entryId, gameweek);
+            return { id: entry.id, data };
+          }),
+      );
       const results: Record<number, Awaited<ReturnType<typeof fetchScoringData>>> = {};
-      for (const entry of entries) {
-        if (!entry.entryId) continue;
-        try {
-          const data = await fetchScoringData(entry.entryId, gameweek);
-          results[entry.id] = data; // Key by league entry id, not team entry id
-        } catch {
-          // Skip failed fetches
+      for (const result of settled) {
+        if (result.status === "fulfilled") {
+          results[result.value.id] = result.value.data;
         }
       }
       return results;
