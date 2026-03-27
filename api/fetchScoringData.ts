@@ -115,7 +115,7 @@ export interface ScoringData {
 }
 
 // calculateAutoSubs logic (ported from calculateAutoSubs.ts)
-function calculateAutoSubs(team: PlayerPick[]): PlayerPick[] {
+export function calculateAutoSubs(team: PlayerPick[]): PlayerPick[] {
   const MinimumFormationRequirements = {
     [ElementType.Goalkeeper]: 1,
     [ElementType.Defender]: 3,
@@ -190,7 +190,7 @@ function calculateAutoSubs(team: PlayerPick[]): PlayerPick[] {
   return team;
 }
 
-function getGameStatus(
+export function getGameStatus(
   teamID: number | undefined,
   gameweekFixtureData: Fixtures,
 ): { isFinished: boolean; isInProgress: boolean } {
@@ -207,7 +207,7 @@ function getGameStatus(
   return { isFinished: true, isInProgress: false };
 }
 
-function mapBootstrapData(
+export function mapBootstrapData(
   bootstrapData: FplBootstrapResponse,
   scoringData: PlayerDataResponse,
   teamData: FplTeamPicksResponse,
@@ -248,7 +248,7 @@ function mapBootstrapData(
   });
 }
 
-async function processTeamData(
+export async function processTeamData(
   bootstrapData: FplBootstrapResponse,
   scoringData: PlayerDataResponse,
   teamData: FplTeamPicksResponse,
