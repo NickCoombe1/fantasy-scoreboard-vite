@@ -1,5 +1,4 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPersonRunning } from "@fortawesome/free-solid-svg-icons";
+import { PersonRunningIcon } from "@/components/svg/Icons";
 
 type ScoreBoardProps = {
   teamName: string;
@@ -32,7 +31,7 @@ export default function ScoreboardHeaderVersus({
                 {" "}
                 <div className="flex items-center gap-1 md:gap-2">
                   {" "}
-                  <FontAwesomeIcon icon={faPersonRunning} />
+                  <PersonRunningIcon />
                   {playersPlayed}
                 </div>{" "}
               </div>
@@ -51,7 +50,7 @@ export default function ScoreboardHeaderVersus({
                 {" "}
                 <div className="flex items-center gap-1 md:gap-2">
                   {" "}
-                  <FontAwesomeIcon icon={faPersonRunning} />
+                  <PersonRunningIcon />
                   {playersPlayed}
                 </div>{" "}
               </div>

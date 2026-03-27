@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { PlayerPick } from "@/models/playerPick";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
+import { ChevronDownIcon, ChevronUpIcon } from "@/components/svg/Icons";
 import PlayerPickCard from "@/components/scoring/PlayerRow";
 
 type ScoreBoardProps = {
@@ -33,10 +32,11 @@ export default function ScoreBoard({ picks }: ScoreBoardProps) {
           <div className="text-center text-light-60 dark:text-dark-60 text-sm font-medium font-roobertMono uppercase leading-3 tracking-wide">
             {`${!showBench ? "SHOW" : "HIDE"} BENCH`}
           </div>
-          <FontAwesomeIcon
-            icon={showBench ? faChevronUp : faChevronDown}
-            className={"text-light-default dark:text-dark-default"}
-          />
+          {showBench ? (
+            <ChevronUpIcon className="text-light-default dark:text-dark-default" />
+          ) : (
+            <ChevronDownIcon className="text-light-default dark:text-dark-default" />
+          )}
         </button>
       </div>{" "}
       {showBench && (

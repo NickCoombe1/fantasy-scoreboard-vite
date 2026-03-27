@@ -1,8 +1,7 @@
 import ScoreboardHeaderVersus from "@/components/scoring/ScoreboardHeaderVersus";
 import ScoreBoard from "@/components/scoring/Scoreboard";
 import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChevronDown, faChevronUp } from "@fortawesome/free-solid-svg-icons";
+import { ChevronDownIcon, ChevronUpIcon } from "@/components/svg/Icons";
 import { LeagueEntry } from "@/models/league";
 import { ScoringData } from "@/models/scoringData";
 
@@ -77,10 +76,11 @@ const Matchup: React.FC<MatchupProps> = ({
           <div className="text-center text-light-60 dark:text-dark-60 text-sm font-medium font-roobertMono uppercase leading-3 tracking-wide">
             {`${!showScoreboard ? "SHOW" : "HIDE"} SCOREBOARD`}
           </div>
-          <FontAwesomeIcon
-            icon={showScoreboard ? faChevronUp : faChevronDown}
-            className={"text-light-default dark:text-dark-default"}
-          />
+          {showScoreboard ? (
+            <ChevronUpIcon className="text-light-default dark:text-dark-default" />
+          ) : (
+            <ChevronDownIcon className="text-light-default dark:text-dark-default" />
+          )}
         </button>
       </div>{" "}
     </div>

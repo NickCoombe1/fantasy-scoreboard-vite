@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faArrowRightArrowLeft,
-  faPersonRunning,
-  faAward,
-  faChevronDown,
-  faChevronUp,
-} from "@fortawesome/free-solid-svg-icons";
+  ArrowRightArrowLeftIcon,
+  PersonRunningIcon,
+  AwardIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+} from "@/components/svg/Icons";
 import { PlayerPick } from "@/models/playerPick";
 import RedCard from "@/components/svg/RedCard";
 import YellowCard from "@/components/svg/YellowCard";
@@ -37,7 +36,7 @@ const PlayerPickCard: React.FC<PlayerPickCardProps> = ({ pick }) => {
           </div>
           {pick.willBeAutosubbed && (
             <div className="z-[1] relative group">
-              <FontAwesomeIcon icon={faArrowRightArrowLeft} />
+              <ArrowRightArrowLeftIcon />
               <span className="absolute left-1/2 transform -translate-x-1/2 top-full mt-0.5 text-xs dark:bg-white dark:text-black bg-black text-white py-1 px-2 rounded-md opacity-0 group-hover:opacity-100 transition-opacity shadow-lg whitespace-nowrap">
                 Autosubbed
               </span>
@@ -45,7 +44,7 @@ const PlayerPickCard: React.FC<PlayerPickCardProps> = ({ pick }) => {
           )}
           {pick.gameStatus.isInProgress && pick.wasSubbedOn && (
             <div className="z-[1] relative group">
-              <FontAwesomeIcon icon={faPersonRunning} />
+              <PersonRunningIcon />
               <span className="absolute left-1/2 transform -translate-x-1/2 top-full mt-0.5 text-xs dark:bg-white dark:text-black bg-black text-white py-1 px-2 rounded-md opacity-0 group-hover:opacity-100 transition-opacity shadow-lg whitespace-nowrap">
                 On the Pitch
               </span>
@@ -56,10 +55,7 @@ const PlayerPickCard: React.FC<PlayerPickCardProps> = ({ pick }) => {
             pick.hasPlayed &&
             pick.gameStatus.isFinished && (
               <div className="z-[1] relative group">
-                <FontAwesomeIcon
-                  icon={faAward}
-                  className="text-light-red dark:text-dark-red"
-                />
+                <AwardIcon className="text-light-red dark:text-dark-red" />
                 <span className="absolute left-1/2 transform -translate-x-1/2 top-full mt-0.5 text-xs bg-red-500 text-light-90 dark:text-dark-90 py-1 px-2 rounded-md opacity-0 group-hover:opacity-100 transition-opacity shadow-lg whitespace-nowrap">
                   Certified Bum
                 </span>
@@ -95,10 +91,11 @@ const PlayerPickCard: React.FC<PlayerPickCardProps> = ({ pick }) => {
             {pick.points}
           </span>
           <button>
-            <FontAwesomeIcon
-              icon={isExpanded ? faChevronUp : faChevronDown}
-              className={"text-light-default dark:text-dark-default"}
-            />
+            {isExpanded ? (
+              <ChevronUpIcon className="text-light-default dark:text-dark-default" />
+            ) : (
+              <ChevronDownIcon className="text-light-default dark:text-dark-default" />
+            )}
           </button>
         </div>
       </div>{" "}

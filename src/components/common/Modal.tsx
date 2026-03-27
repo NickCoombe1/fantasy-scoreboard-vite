@@ -5,7 +5,7 @@ import {
   Transition,
 } from "@headlessui/react";
 import { Fragment, useState } from "react";
-import { XMarkIcon } from "@heroicons/react/24/solid";
+import { XMarkIcon } from "@/components/svg/Icons";
 
 export function useDialog() {
   const [isOpen, setIsOpen] = useState(false);
