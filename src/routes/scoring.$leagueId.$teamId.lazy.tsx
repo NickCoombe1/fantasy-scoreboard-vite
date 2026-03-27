@@ -1,5 +1,5 @@
 import { createLazyFileRoute } from "@tanstack/react-router";
-import { useGameWeekDetails, useScoringData, useLeagueData } from "@/api/queries";
+import { useGameWeekDetails, useLeagueData } from "@/api/queries";
 import ScoringTabs from "@/components/scoring/ScoringTabs";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 
@@ -14,12 +14,8 @@ function ScoringRoute() {
 
   const { data: gameweekInfo, isPending: gwPending } = useGameWeekDetails();
   const { data: leagueData, isPending: leaguePending } = useLeagueData(leagueIdNum);
-  const { data: teamScoringData, isPending: scoringPending } = useScoringData(
-    teamIdNum,
-    gameweekInfo?.current_event ?? 0,
-  );
 
-  if (gwPending || leaguePending || scoringPending) {
+  if (gwPending || leaguePending) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <LoadingSpinner />
@@ -27,7 +23,7 @@ function ScoringRoute() {
     );
   }
 
-  if (!gameweekInfo || !leagueData || !teamScoringData) {
+  if (!gameweekInfo || !leagueData) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <p className="text-red-500">An unexpected error occurred while loading the page.</p>
@@ -38,7 +34,6 @@ function ScoringRoute() {
   return (
     <ScoringTabs
       leagueData={leagueData}
-      teamScoringData={teamScoringData}
       gameweekInfo={gameweekInfo}
       teamID={teamIdNum}
       leagueID={leagueIdNum}
