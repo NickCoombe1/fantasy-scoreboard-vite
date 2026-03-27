@@ -38,4 +38,4 @@ export const fetchWeeklyTeam = (teamID: number, gameweek: number) =>
   fetchJson<FplTeamPicksResponse>(`/api/fetchWeeklyTeam?teamID=${teamID}&gameweek=${gameweek}`);
 
 export const fetchLeagueScoring = (leagueID: number, gameweek: number) =>
-  fetchJson<Record<number, ScoringData>>(`/api/fetchLeagueScoring?leagueID=${leagueID}&gameweek=${gameweek}`);
+  fetchJson<{ leagueData: LeagueData; scoring: Record<number, ScoringData> }>(`/api/fetchLeagueScoring?leagueID=${leagueID}&gameweek=${gameweek}`);

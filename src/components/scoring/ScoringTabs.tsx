@@ -1,18 +1,23 @@
 import { LeagueData } from "@/models/league";
 import { GameStatusData } from "@/models/game";
+import { ScoringData } from "@/models/scoringData";
 import RefreshButton from "@/components/scoring/RefreshButton";
 import LeaguePage from "@/components/scoring/LeaguePage";
 
 interface ScoringTabsProps {
   leagueData: LeagueData;
+  teamsScoringData: Record<number, ScoringData>;
   gameweekInfo: GameStatusData;
+  isFetching: boolean;
   teamID?: number;
   leagueID: number;
 }
 
 export default function ScoringTabs({
   leagueData,
+  teamsScoringData,
   gameweekInfo,
+  isFetching,
   teamID,
   leagueID,
 }: ScoringTabsProps) {
@@ -36,6 +41,11 @@ export default function ScoringTabs({
             </>
           )}
         </div>
+        {isFetching && (
+          <div className="text-center text-light-60 dark:text-dark-60 text-xs font-medium font-roobertMono uppercase tracking-wide animate-pulse">
+            Updating...
+          </div>
+        )}
         {teamID && leagueID && (
           <div className={"flex justify-center"}>
             <RefreshButton />
@@ -45,7 +55,7 @@ export default function ScoringTabs({
           {leagueData && gameweekInfo && (
             <LeaguePage
               leagueData={leagueData}
-              leagueId={leagueID}
+              teamsScoringData={teamsScoringData}
               gameweek={gameweekInfo?.current_event}
             />
           )}

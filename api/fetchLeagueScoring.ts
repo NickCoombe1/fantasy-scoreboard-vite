@@ -6,8 +6,10 @@ interface LeagueEntry {
   id: number;
 }
 
+// Only typing the fields we need — the full object is passed through to the client
 interface LeagueDetailsResponse {
   league_entries: LeagueEntry[];
+  [key: string]: unknown;
 }
 
 interface FplBootstrapResponse {
@@ -97,7 +99,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     res.setHeader("Cache-Control", "s-maxage=30, stale-while-revalidate=60");
-    res.json(results);
+    res.json({ leagueData, scoring: results });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "An unexpected error occurred";
     res.status(500).json({ error: message });
