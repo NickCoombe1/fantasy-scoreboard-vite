@@ -1,42 +1,38 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { getCookie, setCookie, deleteCookie } from "../cookies";
 
-describe("cookies", () => {
+describe("cookies (localStorage-backed)", () => {
   beforeEach(() => {
-    // Clear all cookies
-    document.cookie.split(";").forEach((c) => {
-      const name = c.trim().split("=")[0];
-      if (name) document.cookie = `${name}=; max-age=0; path=/`;
-    });
+    localStorage.clear();
   });
 
   describe("getCookie", () => {
-    it("returns the value of an existing cookie", () => {
-      document.cookie = "testKey=testValue; path=/";
+    it("returns the value of an existing item", () => {
+      localStorage.setItem("testKey", "testValue");
       expect(getCookie("testKey")).toBe("testValue");
     });
 
-    it("returns undefined when cookie does not exist", () => {
+    it("returns undefined when item does not exist", () => {
       expect(getCookie("nonexistent")).toBeUndefined();
     });
 
-    it("returns correct value when multiple cookies exist", () => {
-      document.cookie = "a=1; path=/";
-      document.cookie = "b=2; path=/";
+    it("returns correct value when multiple items exist", () => {
+      localStorage.setItem("a", "1");
+      localStorage.setItem("b", "2");
       expect(getCookie("a")).toBe("1");
       expect(getCookie("b")).toBe("2");
     });
   });
 
   describe("setCookie", () => {
-    it("sets a cookie with the given name and value", () => {
+    it("sets an item with the given name and value", () => {
       setCookie("myKey", "myValue", 7);
       expect(getCookie("myKey")).toBe("myValue");
     });
   });
 
   describe("deleteCookie", () => {
-    it("removes a cookie", () => {
+    it("removes an item", () => {
       setCookie("toDelete", "val", 7);
       expect(getCookie("toDelete")).toBe("val");
       deleteCookie("toDelete");

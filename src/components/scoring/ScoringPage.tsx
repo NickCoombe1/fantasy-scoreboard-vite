@@ -1,3 +1,6 @@
+// NOTE: This component is not currently used — the league page is shown instead.
+// Kept for potential future use as a "My Scoring" individual team view.
+
 import ScoreBoard from "@/components/scoring/Scoreboard";
 import { LeagueData } from "@/models/league";
 import { ScoringData } from "@/models/scoringData";

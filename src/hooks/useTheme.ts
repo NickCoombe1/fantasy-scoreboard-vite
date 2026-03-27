@@ -19,10 +19,7 @@ export function useTheme() {
 
   useEffect(() => {
     const root = window.document.documentElement;
-    const savedTheme = document.cookie
-      .split("; ")
-      .find((c) => c.startsWith("theme="))
-      ?.split("=")[1];
+    const savedTheme = localStorage.getItem("theme");
     if (savedTheme) {
       root.classList.remove("light", "dark");
       root.classList.add(savedTheme);
@@ -35,7 +32,7 @@ export function useTheme() {
     const newTheme = theme === "light" ? "dark" : "light";
     root.classList.remove(theme);
     root.classList.add(newTheme);
-    document.cookie = `theme=${newTheme}; path=/; SameSite=Lax`;
+    localStorage.setItem("theme", newTheme);
     setTheme(newTheme);
   };
 
