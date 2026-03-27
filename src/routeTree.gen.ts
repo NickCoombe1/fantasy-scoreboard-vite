@@ -19,7 +19,7 @@ const WelcomeRoute = WelcomeRouteImport.update({
   id: "/welcome",
   path: "/welcome",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any).lazy(() => import("./routes/welcome.lazy").then((d) => d.Route))
 const AboutRoute = AboutRouteImport.update({
   id: "/about",
   path: "/about",
@@ -34,12 +34,14 @@ const TeamTeamIdRoute = TeamTeamIdRouteImport.update({
   id: "/team/$teamId",
   path: "/team/$teamId",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any).lazy(() => import("./routes/team.$teamId.lazy").then((d) => d.Route))
 const ScoringLeagueIdTeamIdRoute = ScoringLeagueIdTeamIdRouteImport.update({
   id: "/scoring/$leagueId/$teamId",
   path: "/scoring/$leagueId/$teamId",
   getParentRoute: () => rootRouteImport,
-} as any)
+} as any).lazy(() =>
+  import("./routes/scoring.$leagueId.$teamId.lazy").then((d) => d.Route),
+)
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute
