@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { PlayerPick } from "@/models/playerPick";
 import { ChevronDownIcon, ChevronUpIcon } from "@/components/svg/Icons";
 import PlayerPickCard from "@/components/scoring/PlayerRow";
@@ -10,8 +10,8 @@ type ScoreBoardProps = {
 export default function ScoreBoard({ picks }: ScoreBoardProps) {
   const [showBench, setShowBench] = useState(false);
 
-  const startingPlayers = picks.filter((pick) => !pick.isSub);
-  const benchPlayers = picks.filter((pick) => pick.isSub);
+  const startingPlayers = useMemo(() => picks.filter((pick) => !pick.isSub), [picks]);
+  const benchPlayers = useMemo(() => picks.filter((pick) => pick.isSub), [picks]);
 
   return (
     <div className="w-full p-6 md:p-8 border-white/50 bg-white/70 dark:bg-white/5 rounded-2xl border  flex-col justify-start items-center gap-8 inline-flex">

@@ -1,9 +1,11 @@
+import { memo } from "react";
+
 type ScoreBoardProps = {
   teamName: string;
   totalPoints: number;
 };
 
-export default function ScoreBoardHeader({
+export default memo(function ScoreBoardHeader({
   teamName,
   totalPoints,
 }: ScoreBoardProps) {
@@ -25,4 +27,4 @@ export default function ScoreBoardHeader({
       </div>
     </div>
   );
-}
+});

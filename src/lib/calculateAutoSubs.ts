@@ -52,22 +52,24 @@ export function calculateAutoSubs(team: PlayerPick[]): PlayerPick[] {
         );
       });
       const replacement = eligibleSubs.find((sub) => {
-        // Check if this substitution is valid by simulating the change
-        const originalTeam = JSON.parse(JSON.stringify(team)); // Clone team for validation
         const subIndex = team.findIndex((p) => p.element === sub.element);
         const pickIndex = team.findIndex((p) => p.element === pick.element);
-        // Perform the substitution in the cloned team
         if (subIndex !== -1 && pickIndex !== -1) {
-          originalTeam[subIndex]!.position = team[pickIndex]!.position;
-          originalTeam[pickIndex]!.position = team[subIndex]!.position;
+          // Swap positions temporarily to validate formation
+          const origSubPos = team[subIndex]!.position;
+          const origPickPos = team[pickIndex]!.position;
+          team[subIndex]!.position = origPickPos;
+          team[pickIndex]!.position = origSubPos;
 
-          // Check if the updated team meets formation requirements
-          if (isFormationValid(originalTeam)) {
-            return true;
-          }
+          const valid = isFormationValid(team);
+
+          // Restore original positions
+          team[subIndex]!.position = origSubPos;
+          team[pickIndex]!.position = origPickPos;
+
+          if (valid) return true;
         }
-
-        return false; // Reject substitution if it invalidates the formation
+        return false;
       });
 
       if (replacement) {

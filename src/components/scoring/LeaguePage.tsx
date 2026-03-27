@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { LeagueData } from "@/models/league";
 import { useAllLeagueScoringData } from "@/api/queries";
 import Matchup from "@/components/scoring/Matchup";
@@ -14,23 +15,26 @@ export default function LeaguePage({ gameweek, leagueData }: LeaguePageProps) {
     .map((e) => ({ id: e.id, entryId: e.entry_id }));
   const { data: teamsScoringData, isPending } = useAllLeagueScoringData(entries, gameweek);
 
-  if (isPending || !teamsScoringData) {
+  const enrichedScoringData = useMemo(() => {
+    if (!teamsScoringData) return null;
+    const data = { ...teamsScoringData };
+    for (const team of leagueData.league_entries) {
+      if (!team.entry_id && Object.keys(data).length > 0) {
+        const allScores = Object.values(data);
+        const avgPoints = Math.round(allScores.reduce((s, t) => s + (t.totalPoints ?? 0), 0) / allScores.length);
+        const avgPlayed = Math.round(allScores.reduce((s, t) => s + (t.playersPlayed ?? 0), 0) / allScores.length);
+        data[team.id] = { totalPoints: avgPoints, playersPlayed: avgPlayed, picks: [] };
+      }
+    }
+    return data;
+  }, [teamsScoringData, leagueData.league_entries]);
+
+  if (isPending || !enrichedScoringData) {
     return (
       <div className="flex justify-center mt-8">
         <LoadingSpinner />
       </div>
     );
-  }
-
-  // Handle average scoring for entries without entry_id
-  const enrichedScoringData = { ...teamsScoringData };
-  for (const team of leagueData.league_entries) {
-    if (!team.entry_id && Object.keys(enrichedScoringData).length > 0) {
-      const allScores = Object.values(enrichedScoringData);
-      const avgPoints = Math.round(allScores.reduce((s, t) => s + (t.totalPoints ?? 0), 0) / allScores.length);
-      const avgPlayed = Math.round(allScores.reduce((s, t) => s + (t.playersPlayed ?? 0), 0) / allScores.length);
-      enrichedScoringData[team.id] = { totalPoints: avgPoints, playersPlayed: avgPlayed, picks: [] };
-    }
   }
 
   return (

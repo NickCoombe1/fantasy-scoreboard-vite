@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { PersonRunningIcon } from "@/components/svg/Icons";
 
 type ScoreBoardProps = {
@@ -7,7 +8,7 @@ type ScoreBoardProps = {
   playersPlayed: number;
 };
 
-export default function ScoreboardHeaderVersus({
+export default memo(function ScoreboardHeaderVersus({
   teamName,
   totalPoints,
   alignPoints,
@@ -66,4 +67,4 @@ export default function ScoreboardHeaderVersus({
       </div>
     </div>
   );
-}
+});

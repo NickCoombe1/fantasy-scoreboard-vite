@@ -157,15 +157,20 @@ export function calculateAutoSubs(team: PlayerPick[]): PlayerPick[] {
         );
       });
       const replacement = eligibleSubs.find((sub) => {
-        const originalTeam = JSON.parse(JSON.stringify(team));
         const subIndex = team.findIndex((p) => p.element === sub.element);
         const pickIndex = team.findIndex((p) => p.element === pick.element);
         if (subIndex !== -1 && pickIndex !== -1) {
-          originalTeam[subIndex].position = team[pickIndex].position;
-          originalTeam[pickIndex].position = team[subIndex].position;
-          if (isFormationValid(originalTeam)) {
-            return true;
-          }
+          const origSubPos = team[subIndex].position;
+          const origPickPos = team[pickIndex].position;
+          team[subIndex].position = origPickPos;
+          team[pickIndex].position = origSubPos;
+
+          const valid = isFormationValid(team);
+
+          team[subIndex].position = origSubPos;
+          team[pickIndex].position = origPickPos;
+
+          if (valid) return true;
         }
         return false;
       });
