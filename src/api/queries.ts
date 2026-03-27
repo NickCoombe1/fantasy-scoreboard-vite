@@ -17,7 +17,6 @@ export function useGameWeekDetails() {
   return useQuery({
     queryKey: ["gameWeekDetails"],
     queryFn: fetchGameWeekDetails,
-    staleTime: MINUTE,
   });
 }
 
@@ -60,7 +59,6 @@ export function useGameWeekFixtures(gameweek: number) {
   return useQuery({
     queryKey: ["gameWeekFixtures", gameweek],
     queryFn: () => fetchGameWeekFixtures(gameweek),
-    staleTime: MINUTE,
     enabled: !!gameweek,
   });
 }

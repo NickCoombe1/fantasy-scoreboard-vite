@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { TabGroup, TabPanel, TabPanels } from "@headlessui/react";
 import { LeagueData } from "@/models/league";
 import { GameStatusData } from "@/models/game";
@@ -22,9 +23,11 @@ export default function ScoringTabs({
   teamID,
   leagueID,
 }: ScoringTabsProps) {
+  const [selectedTab, setSelectedTab] = useState(0);
+
   return (
     <div className={"relative md:top-[-3.125rem]"}>
-      <TabGroup className={"flex flex-col items-center gap-4 "}>
+      <TabGroup className={"flex flex-col items-center gap-4 "} onChange={setSelectedTab}>
         <TabHeader leagueName={leagueData.league.name} />
         <div className="h-[108px] md:h-[137px] flex-col justify-start items-center gap-4 flex my-6">
           {gameweekInfo && (
@@ -53,11 +56,12 @@ export default function ScoringTabs({
                 />{" "}
               </TabPanel>
               <TabPanel>
-                {" "}
-                <LeaguePage
-                  leagueData={leagueData}
-                  gameweek={gameweekInfo?.current_event}
-                />{" "}
+                {selectedTab === 1 && (
+                  <LeaguePage
+                    leagueData={leagueData}
+                    gameweek={gameweekInfo?.current_event}
+                  />
+                )}
               </TabPanel>
             </>
           )}

@@ -300,6 +300,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     ]);
 
     const result = await processTeamData(bootstrapData, scoringData, teamData, gameweekFixtureData);
+    res.setHeader("Cache-Control", "s-maxage=30, stale-while-revalidate=30");
     res.json(result);
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "An unexpected error occurred";
