@@ -103,6 +103,7 @@ function makeRealisticData(opts: { subsNeeded: number }) {
     team_a: i * 2 + 1,
     team_h: i * 2 + 2,
     finished: true,
+    finished_provisional: true,
     started: true,
   }));
 

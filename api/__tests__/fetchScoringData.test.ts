@@ -3,11 +3,12 @@ import { getGameStatus, mapBootstrapData, processTeamData } from "../_lib/scorin
 
 // ---- Helpers for building test data ----
 
-function makeFixture(overrides: Partial<{ team_a: number; team_h: number; finished: boolean; started: boolean }> = {}) {
+function makeFixture(overrides: Partial<{ team_a: number; team_h: number; finished: boolean; finished_provisional: boolean; started: boolean }> = {}) {
   return {
     team_a: 1,
     team_h: 2,
     finished: false,
+    finished_provisional: false,
     started: false,
     ...overrides,
   };
@@ -36,6 +37,14 @@ describe("getGameStatus", () => {
   it("returns in progress when team found, started but not finished", () => {
     const fixtures = [makeFixture({ team_a: 5, team_h: 10, started: true, finished: false })];
     expect(getGameStatus(5, fixtures)).toEqual({ isFinished: false, isInProgress: true });
+  });
+
+  it("treats finished_provisional as finished, even when finished (bonus-confirmed) is still false", () => {
+    // Real observed FPL behavior: `finished` can stay false for hours/days after
+    // full-time while bonus points are confirmed, while `finished_provisional`
+    // flips true right at the final whistle.
+    const fixtures = [makeFixture({ team_a: 5, team_h: 10, started: true, finished: false, finished_provisional: true })];
+    expect(getGameStatus(5, fixtures)).toEqual({ isFinished: true, isInProgress: false });
   });
 
   it("returns not started when team found, not started", () => {

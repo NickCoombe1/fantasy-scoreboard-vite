@@ -100,6 +100,7 @@ export interface Fixture {
   team_a: number;
   team_h: number;
   finished: boolean;
+  finished_provisional: boolean;
   started: boolean;
 }
 
@@ -199,8 +200,13 @@ export function getGameStatus(
   if (teamID) {
     for (const match of gameweekFixtureData) {
       if (match.team_a === teamID || match.team_h === teamID) {
-        const isFinished = match.finished;
-        const isInProgress = match.started && !match.finished;
+        // `finished` waits for bonus points to be officially confirmed, which
+        // can lag hours (sometimes longer) after full-time — `finished_provisional`
+        // flips true right at the final whistle and is what we want here, both
+        // for the "on the pitch" indicator and so auto-subs actually trigger
+        // promptly instead of waiting on a flag that may never update in time.
+        const isFinished = match.finished || match.finished_provisional;
+        const isInProgress = match.started && !isFinished;
         return { isFinished, isInProgress };
       }
     }
