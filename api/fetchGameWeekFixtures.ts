@@ -5,7 +5,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!gameweek) return res.status(400).json({ error: "gameweek is required" });
 
   try {
-    const response = await fetch(`https://draft.premierleague.com/api/event/${gameweek}/fixtures`);
+    const gameweekNumber = parseInt(String(gameweek), 10);
+    if (isNaN(gameweekNumber)) return res.status(400).json({ error: "Invalid gameweek parameter" });
+
+    const response = await fetch(`https://draft.premierleague.com/api/event/${gameweekNumber}/fixtures`);
     if (!response.ok) throw new Error("Failed to fetch fixture data");
     const data = await response.json();
     res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=30");

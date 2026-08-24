@@ -1,7 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { calculateAutoSubs } from "../calculateAutoSubs";
-import { ElementType } from "@/models/playerData";
-import { PlayerPick } from "@/models/playerPick";
+import { calculateAutoSubs, ElementType, type PlayerPick } from "../_lib/scoring";
 
 function makePick(overrides: Partial<PlayerPick> & { element: number; position: number; fieldPosition: ElementType }): PlayerPick {
   const { element, position, fieldPosition, ...rest } = overrides;
@@ -219,5 +217,21 @@ describe("calculateAutoSubs", () => {
 
     const result = calculateAutoSubs(team);
     expect(result).toBe(team); // same reference
+  });
+
+  it("excludes a player with an unrecognized field position (0 sentinel) from every formation count", () => {
+    const team = makeStandard442();
+    // Simulate a player missing from bootstrap data: field position falls back to the 0 sentinel
+    team[9]!.fieldPosition = 0 as ElementType;
+    team[9]!.hasPlayed = false;
+
+    const result = calculateAutoSubs(team);
+
+    // The sentinel player is invisible to formation counts, so it's treated as if the
+    // formation already has 0 forwards on the field there — but since it's a starter
+    // that didn't play, a bench replacement should still be attempted rather than the
+    // player being miscounted as a goalkeeper (which would have blocked the max-1-GK rule).
+    const subbedOut = result.find((p) => p.element === 10);
+    expect(subbedOut!.willBeAutosubbed).toBe(true);
   });
 });

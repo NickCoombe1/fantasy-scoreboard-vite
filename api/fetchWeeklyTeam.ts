@@ -7,7 +7,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const teamIDNumber = parseInt(String(teamID), 10);
     const gameweekNumber = parseInt(String(gameweek), 10);
-    if (isNaN(teamIDNumber) || isNaN(gameweekNumber)) throw new Error("Invalid parameters");
+    if (isNaN(teamIDNumber) || isNaN(gameweekNumber)) {
+      return res.status(400).json({ error: "Invalid teamID or gameweek parameter" });
+    }
 
     const response = await fetch(`https://draft.premierleague.com/api/entry/${teamIDNumber}/event/${gameweekNumber}`);
     if (!response.ok) throw new Error(`Failed to fetch team data: ${response.statusText}`);

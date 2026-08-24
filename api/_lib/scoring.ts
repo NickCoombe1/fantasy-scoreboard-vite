@@ -1,4 +1,4 @@
-enum ElementType {
+export enum ElementType {
   Goalkeeper = 1,
   Defender = 2,
   Midfielder = 3,
@@ -41,7 +41,7 @@ interface PlayerStats {
   chance_of_playing_this_round: number;
 }
 
-interface PlayerPick {
+export interface PlayerPick {
   id: number;
   element: number;
   position: number;
@@ -215,20 +215,26 @@ export function mapBootstrapData(
   teamData: FplTeamPicksResponse,
   gameweekFixtureData: Fixtures,
 ): PlayerPick[] {
+  const bootstrapByElementId = new Map(
+    bootstrapData.elements.map((element) => [element.id, element]),
+  );
+
   return teamData.picks.map((pick) => {
     const playerData = scoringData.elements[pick.element];
     const basePoints = playerData?.stats.total_points || 0;
     const totalPoints = basePoints * pick.multiplier;
     const isSub = pick.position > 11;
-    const playerInfo = Object.values(bootstrapData.elements).find(
-      (player) => player.id === pick.element,
-    );
+    const playerInfo = bootstrapByElementId.get(pick.element);
     const playerName = playerInfo?.web_name || "Unknown";
     const isInjured = playerInfo?.chance_of_playing_this_round == 0;
 
     const gameStatus = getGameStatus(playerInfo?.team, gameweekFixtureData);
     const hasPlayed = (playerData?.stats.minutes || 0) > 0;
-    const fieldPosition = playerInfo?.element_type ? playerInfo.element_type : ElementType.Goalkeeper;
+    // 0 is not a valid ElementType (enum starts at 1) — used as a sentinel so a
+    // player missing from bootstrap data (stale cache, new signing) is excluded
+    // from every formation type count in calculateAutoSubs instead of being
+    // silently miscounted as a goalkeeper.
+    const fieldPosition = playerInfo?.element_type ? playerInfo.element_type : (0 as ElementType);
     const wasSubbedOn = gameStatus.isInProgress && playerData?.stats.minutes > 0;
 
     return {

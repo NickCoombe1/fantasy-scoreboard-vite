@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { FplTeamResponse } from "@/models/fplTeamResponse";
 import { LeagueData } from "@/models/league";
@@ -33,38 +33,50 @@ function TeamPage() {
     }
   };
 
-  useEffect(() => {
+  const fetchData = useCallback(async () => {
     if (!teamId) {
       setError("Team ID is missing.");
       return;
     }
 
-    const fetchData = async () => {
-      try {
-        const data: FplTeamResponse = await fetchLeagueID(Number(teamId));
-        if (data) {
-          const leaguePromises = data.entry.league_set.map(async (league) => {
-            const response = await fetch(
-              `/api/fetchLeagueDetails?leagueID=${league}`,
-            );
-            if (!response.ok) {
-              throw new Error("Failed to fetch league data");
-            }
-            return await response.json();
-          });
-          const leagueResponses = await Promise.all(leaguePromises);
-          setLeagueData(leagueResponses); // Set all league data
-        } else {
-          setError("Failed to fetch team data.");
-        }
-      } catch (error) {
-        console.error("Error in fetching data:", error);
-        setError("An unexpected error occurred.");
-      }
-    };
+    setError("");
+    setLeagueData(null);
 
-    fetchData();
+    try {
+      const data: FplTeamResponse = await fetchLeagueID(Number(teamId));
+      if (data) {
+        const leaguePromises = data.entry.league_set.map(async (league) => {
+          const response = await fetch(
+            `/api/fetchLeagueDetails?leagueID=${league}`,
+          );
+          if (!response.ok) {
+            throw new Error("Failed to fetch league data");
+          }
+          return await response.json();
+        });
+        const leagueResults = await Promise.allSettled(leaguePromises);
+        const leagueResponses = leagueResults
+          .filter((result) => result.status === "fulfilled")
+          .map((result) => result.value);
+
+        if (leagueResponses.length === 0 && data.entry.league_set.length > 0) {
+          setError("Failed to fetch league data. Please try again.");
+          return;
+        }
+
+        setLeagueData(leagueResponses); // One or more leagues fetched successfully
+      } else {
+        setError("Failed to fetch team data.");
+      }
+    } catch (error) {
+      console.error("Error in fetching data:", error);
+      setError("An unexpected error occurred.");
+    }
   }, [teamId]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleLeagueSelection = (leagueID: number) => {
     try {
@@ -87,8 +99,17 @@ function TeamPage() {
 
   if (error) {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center">
+      <div className="min-h-[80vh] flex flex-col items-center justify-center gap-6">
         <p className="text-red-500">{error}</p>
+        <div className="flex flex-col items-center gap-3">
+          <StyledButton label={"TRY AGAIN"} type={"button"} onClick={fetchData} />
+          <StyledButton
+            label={"BACK TO HOMEPAGE"}
+            type={"button"}
+            secondary
+            onClick={handleBackToHomepage}
+          />
+        </div>
       </div>
     );
   }

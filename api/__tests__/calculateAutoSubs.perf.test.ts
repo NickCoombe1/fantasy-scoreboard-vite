@@ -1,7 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { calculateAutoSubs } from "../calculateAutoSubs";
-import { ElementType } from "@/models/playerData";
-import { PlayerPick } from "@/models/playerPick";
+import { calculateAutoSubs, ElementType, type PlayerPick } from "../_lib/scoring";
 
 /**
  * Performance benchmarks for calculateAutoSubs.
