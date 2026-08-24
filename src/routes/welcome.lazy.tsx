@@ -10,6 +10,7 @@ import { Modal, useDialog } from "@/components/common/Modal";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import { useTheme } from "@/hooks/useTheme";
 import { getCookie, setCookie } from "@/lib/cookies";
+import { isFirstNavigation } from "@/lib/appSession";
 
 export const Route = createLazyFileRoute("/welcome")({
   component: WelcomePage,
@@ -23,17 +24,15 @@ function WelcomePage() {
   const { isOpen, openDialog, closeDialog } = useDialog();
   const [loading, setLoading] = useState(false);
 
-  // Check cookies and redirect if teamID and leagueID are present
+  // Check cookies and redirect if teamID and leagueID are present, but only on a
+  // fresh visit (bookmark, PWA icon, browser refresh) — not when the user
+  // navigated here from within the app (e.g. "BACK TO HOMEPAGE").
   useEffect(() => {
     const teamID = getCookie("teamID");
     const leagueID = getCookie("leagueID");
+    const isFreshVisit = isFirstNavigation();
 
-    // Check if user came from another page in your site
-    const referrer = document.referrer;
-    const isInternalReferrer =
-      referrer && new URL(referrer).origin === window.location.origin;
-
-    if (!isInternalReferrer && teamID && leagueID) {
+    if (isFreshVisit && teamID && leagueID) {
       setLoading(true);
       navigate({ to: `/scoring/${leagueID}/${teamID}` });
     }
@@ -104,6 +103,12 @@ function WelcomePage() {
                     <span
                       className="inline-block align-middle pb-1 md:pb-0.5 pl-0.5"
                       onClick={openDialog}
+                      role="button"
+                      tabIndex={0}
+                      aria-label="How to find your Team ID"
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === " ") openDialog();
+                      }}
                     >
                       <About mode={theme} height={16} width={16} />
                     </span>

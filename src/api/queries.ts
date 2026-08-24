@@ -82,9 +82,23 @@ export function useWeeklyTeam(teamId: number, gameweek: number) {
   });
 }
 
+// Query keys for live/frequently-changing scoring data only — excludes
+// long-lived data (bootstrap, leagueID: 24h staleTime; leagueData: 5min) that
+// "Update Scores" has no reason to force a refetch of.
+const LIVE_SCORING_QUERY_KEYS = [
+  "allLeagueScoring",
+  "scoringData",
+  "weeklyScoring",
+  "weeklyTeam",
+  "gameWeekFixtures",
+];
+
 export function useRefreshQueries() {
   const queryClient = useQueryClient();
-  return () => queryClient.invalidateQueries();
+  return () =>
+    Promise.all(
+      LIVE_SCORING_QUERY_KEYS.map((key) => queryClient.invalidateQueries({ queryKey: [key] })),
+    );
 }
 
 // Fetches scoring data for all teams in a league via a single batch endpoint

@@ -29,6 +29,22 @@ describe("cookies (localStorage-backed)", () => {
       setCookie("myKey", "myValue", 7);
       expect(getCookie("myKey")).toBe("myValue");
     });
+
+    it("expires the value after the given number of days", () => {
+      setCookie("expiring", "value", 7);
+      const raw = JSON.parse(localStorage.getItem("expiring")!);
+      // simulate 8 days having passed
+      raw.expiresAt = Date.now() - 24 * 60 * 60 * 1000;
+      localStorage.setItem("expiring", JSON.stringify(raw));
+
+      expect(getCookie("expiring")).toBeUndefined();
+      expect(localStorage.getItem("expiring")).toBeNull(); // expired entry is cleaned up
+    });
+
+    it("does not expire the value before the given number of days", () => {
+      setCookie("notYetExpired", "value", 7);
+      expect(getCookie("notYetExpired")).toBe("value");
+    });
   });
 
   describe("deleteCookie", () => {

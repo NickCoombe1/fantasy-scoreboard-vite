@@ -109,7 +109,11 @@ export function Modal({ isOpen, closeDialog }: ModalProps) {
             leaveFrom="translate-y-0 opacity-100"
             leaveTo="translate-y-4 opacity-0"
           >
-            <button className="w-[66px] h-[66px] px-8 py-8 bg-[#030303] dark:bg-white rounded-2xl justify-center items-center flex shadow">
+            <button
+              onClick={closeDialog}
+              aria-label="Close dialog"
+              className="w-[66px] h-[66px] px-8 py-8 bg-[#030303] dark:bg-white rounded-2xl justify-center items-center flex shadow"
+            >
               <div className="w-5 h-5 relative">
                 <XMarkIcon
                   className="text-white dark:text-black"

@@ -17,16 +17,23 @@ export default function Header(): ReactNode {
   const backgroundTransparent = !location.pathname.startsWith("/scoring/");
   const handleBackClick = () => {
     if (teamId) navigate({ to: "/team/$teamId", params: { teamId } });
-    else {
-      window.history.back();
-    }
+    else if (window.history.length > 1) window.history.back();
+    else navigate({ to: "/" });
   };
   return (
     <header className={"md:sticky top-0 z-[1000]"}>
       <div className="w-full h-20 px-10 py-6 justify-between items-center hidden md:flex">
         <div className="w-[104px] h-[25.36px] relative md:z-10">
           {" "}
-          <div onClick={handleBackClick}>
+          <div
+            onClick={handleBackClick}
+            role="button"
+            tabIndex={0}
+            aria-label="Back"
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") handleBackClick();
+            }}
+          >
             <Logo mode={theme} />
           </div>
         </div>
@@ -55,20 +62,28 @@ export default function Header(): ReactNode {
       >
         <div className="w-full h-20 p-6 justify-between items-center inline-flex align-middle">
           <ThemeToggle />
-          <div onClick={handleBackClick}>
+          <div
+            onClick={handleBackClick}
+            role="button"
+            tabIndex={0}
+            aria-label="Back"
+            onKeyDown={(event) => {
+              if (event.key === "Enter" || event.key === " ") handleBackClick();
+            }}
+          >
             <Logo mode={theme} />
           </div>
           <div className="justify-start items-center gap-1 flex">
             <div className="w-[35px] h-[35px] px-3.5 py-3 bg-button-light-bg-20  bg-button-light-secondary dark:bg-button-dark-bg bg-blend-overlay  rounded justify-center items-center gap-2.5 flex">
               <div className="w-5 h-5 relative">
-                <Link to="/about">
+                <Link to="/about" aria-label="About">
                   <About mode={theme} />
                 </Link>
               </div>
             </div>
             {teamId && (
               <div className="w-[35px] h-[35px] px-3.5 py-3 bg-button-light-bg-20  bg-button-light-secondary dark:bg-button-dark-bg bg-blend-overlay  rounded flex-col justify-center items-center gap-[5px] inline-flex">
-                <Link to="/team/$teamId" params={{ teamId: teamId! }}>
+                <Link to="/team/$teamId" params={{ teamId: teamId! }} aria-label="My Leagues">
                   <div className="w-5 h-5 relative flex justify-center items-center">
                     <Menu mode={theme} />
                   </div>

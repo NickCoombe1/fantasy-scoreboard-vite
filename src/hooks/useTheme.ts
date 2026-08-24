@@ -27,14 +27,14 @@ export function useTheme() {
     root.classList.remove("hidden");
   }, []);
 
-  const toggleTheme = () => {
+  const selectTheme = (newTheme: "light" | "dark") => {
+    if (newTheme === theme) return;
     const root = window.document.documentElement;
-    const newTheme = theme === "light" ? "dark" : "light";
     root.classList.remove(theme);
     root.classList.add(newTheme);
     localStorage.setItem("theme", newTheme);
     setTheme(newTheme);
   };
 
-  return { theme, toggleTheme };
+  return { theme, selectTheme };
 }

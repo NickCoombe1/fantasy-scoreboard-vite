@@ -5,7 +5,7 @@ import DarkMode from "@/components/svg/DarkMode";
 import { useTheme } from "@/hooks/useTheme";
 
 export default function ThemeToggle(): React.ReactNode {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, selectTheme } = useTheme();
 
   return (
     <div className="h-[43px] p-1 bg-graphics-light-depth dark:bg-graphics-dark-depth rounded-lg z-40 shadow-custom-light-header backdrop-blur-20 justify-start items-center gap-1 inline-flex">
@@ -17,13 +17,13 @@ export default function ThemeToggle(): React.ReactNode {
         }`}
       />
       <div className="bg-button-light-bg dark:bg-transparent w-[35px] h-[35px] px-3.5 py-3 rounded justify-center items-center gap-2.5 inline-flex ">
-        <Button onClick={toggleTheme}>
+        <Button onClick={() => selectTheme("light")} aria-label="Switch to light mode">
           <LightMode mode={theme} />
         </Button>
       </div>
 
       <div className="w-[35px] h-[35px] px-3.5 py-3 dark:bg-button-dark-bg dark:bg-button-dark-secondary rounded justify-center items-center gap-2.5 inline-flex">
-        <Button onClick={toggleTheme}>
+        <Button onClick={() => selectTheme("dark")} aria-label="Switch to dark mode">
           <DarkMode mode={theme} />
         </Button>
       </div>
