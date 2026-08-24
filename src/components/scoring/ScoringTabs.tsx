@@ -63,8 +63,15 @@ export default function ScoringTabs({
               )}
             </TabPanel>
             <TabPanel>
-              {leagueData && (
-                <LeagueTable leagueData={leagueData} teamID={teamID} onTeamClick={handleTeamClick} />
+              {leagueData && gameweekInfo && (
+                <LeagueTable
+                  leagueData={leagueData}
+                  teamsScoringData={teamsScoringData}
+                  currentGameweek={gameweekInfo.current_event}
+                  currentGameweekFinished={gameweekInfo.current_event_finished}
+                  teamID={teamID}
+                  onTeamClick={handleTeamClick}
+                />
               )}
             </TabPanel>
           </TabPanels>

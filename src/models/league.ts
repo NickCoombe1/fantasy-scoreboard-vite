@@ -43,7 +43,7 @@ export interface Match {
 }
 
 export interface Standing {
-  last_rank: number;
+  last_rank: number | null;
   league_entry: number;
   matches_drawn: number;
   matches_lost: number;
