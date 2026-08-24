@@ -1,5 +1,6 @@
 import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import Header from "@/components/common/Header";
 
 export const Route = createRootRoute({
@@ -24,6 +25,7 @@ function RootLayout() {
         </main>
       </div>
       <Analytics />
+      <SpeedInsights />
     </div>
   );
 }
