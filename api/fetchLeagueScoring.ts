@@ -6,7 +6,7 @@ import {
   type PlayerDataResponse,
   type FplTeamPicksResponse,
   type Fixtures,
-} from "./_lib/scoring";
+} from "./_lib/scoring.js";
 
 interface LeagueEntry {
   entry_id: number;

@@ -5,7 +5,7 @@ import {
   type PlayerDataResponse,
   type FplTeamPicksResponse,
   type Fixtures,
-} from "./_lib/scoring";
+} from "./_lib/scoring.js";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { teamID, gameweek } = req.query;
