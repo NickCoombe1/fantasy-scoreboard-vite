@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { LeagueData } from "@/models/league";
 import { ScoringData } from "@/models/scoringData";
 import Matchup from "@/components/scoring/Matchup";
@@ -7,9 +7,10 @@ interface LeaguePageProps {
   gameweek: number;
   leagueData: LeagueData;
   teamsScoringData: Record<number, ScoringData>;
+  highlightedTeamId?: number | null;
 }
 
-export default function LeaguePage({ gameweek, leagueData, teamsScoringData }: LeaguePageProps) {
+export default function LeaguePage({ gameweek, leagueData, teamsScoringData, highlightedTeamId }: LeaguePageProps) {
   const enrichedScoringData = useMemo(() => {
     const data = { ...teamsScoringData };
     for (const team of leagueData.league_entries) {
@@ -22,6 +23,24 @@ export default function LeaguePage({ gameweek, leagueData, teamsScoringData }: L
     }
     return data;
   }, [teamsScoringData, leagueData.league_entries]);
+
+  const matchRefs = useRef<Record<number, HTMLDivElement | null>>({});
+  const [flashTeamId, setFlashTeamId] = useState<number | null>(null);
+
+  // Scrolls to and briefly highlights the matchup for a team clicked from the
+  // League Overview tab. LeaguePage remounts every time the Scoring tab
+  // becomes active again (ScoringTabs only mounts one tab at a time), so this
+  // runs fresh on every "jump to matchup" click, even repeat clicks on the
+  // same team.
+  useEffect(() => {
+    if (highlightedTeamId == null) return;
+    const el = matchRefs.current[highlightedTeamId];
+    if (!el) return;
+    el.scrollIntoView({ behavior: "smooth", block: "center" });
+    setFlashTeamId(highlightedTeamId);
+    const timeout = setTimeout(() => setFlashTeamId(null), 2000);
+    return () => clearTimeout(timeout);
+  }, [highlightedTeamId]);
 
   return (
     <div className="min-h-[80vh] flex flex-col items-center p-6">
@@ -38,8 +57,19 @@ export default function LeaguePage({ gameweek, leagueData, teamsScoringData }: L
               const team2Data = enrichedScoringData[team2.id];
               if (!team1Data || !team2Data) return <div key={index} className="text-red-500">Error: Scoring data missing.</div>;
 
+              const isFlashing = flashTeamId === team1.id || flashTeamId === team2.id;
+
               return (
-                <div key={index}>
+                <div
+                  key={index}
+                  ref={(el) => {
+                    matchRefs.current[team1.id] = el;
+                    matchRefs.current[team2.id] = el;
+                  }}
+                  className={`rounded-2xl transition-colors duration-700 ${
+                    isFlashing ? "bg-black/10 dark:bg-white/10 ring-2 ring-light-dark-blue" : ""
+                  }`}
+                >
                   <Matchup team={team1} opponent={team2} teamScoring={team1Data} opponentScoring={team2Data} />
                 </div>
               );

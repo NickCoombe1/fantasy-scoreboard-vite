@@ -1,8 +1,11 @@
+import { useState } from "react";
 import { LeagueData } from "@/models/league";
 import { GameStatusData } from "@/models/game";
 import { ScoringData } from "@/models/scoringData";
 import RefreshButton from "@/components/scoring/RefreshButton";
 import LeaguePage from "@/components/scoring/LeaguePage";
+import LeagueTable from "@/components/scoring/LeagueTable";
+import StyledButton from "@/components/common/StyledButton";
 
 interface ScoringTabsProps {
   leagueData: LeagueData;
@@ -13,6 +16,8 @@ interface ScoringTabsProps {
   leagueID: number;
 }
 
+type ActiveTab = "scoring" | "league-overview";
+
 export default function ScoringTabs({
   leagueData,
   teamsScoringData,
@@ -21,6 +26,14 @@ export default function ScoringTabs({
   teamID,
   leagueID,
 }: ScoringTabsProps) {
+  const [activeTab, setActiveTab] = useState<ActiveTab>("scoring");
+  const [highlightedTeamId, setHighlightedTeamId] = useState<number | null>(null);
+
+  const handleTeamClick = (teamEntryId: number) => {
+    setHighlightedTeamId(teamEntryId);
+    setActiveTab("scoring");
+  };
+
   return (
     <div className={"relative md:top-[-3.125rem]"}>
       <div className={"flex flex-col items-center gap-4"}>
@@ -51,13 +64,31 @@ export default function ScoringTabs({
             <RefreshButton />
           </div>
         )}
+        <div className="flex justify-center gap-2">
+          <StyledButton
+            label="SCORING"
+            type="button"
+            secondary={activeTab !== "scoring"}
+            onClick={() => setActiveTab("scoring")}
+          />
+          <StyledButton
+            label="LEAGUE OVERVIEW"
+            type="button"
+            secondary={activeTab !== "league-overview"}
+            onClick={() => setActiveTab("league-overview")}
+          />
+        </div>
         <div className={"w-full"}>
-          {leagueData && gameweekInfo && (
+          {leagueData && gameweekInfo && activeTab === "scoring" && (
             <LeaguePage
               leagueData={leagueData}
               teamsScoringData={teamsScoringData}
               gameweek={gameweekInfo?.current_event}
+              highlightedTeamId={highlightedTeamId}
             />
+          )}
+          {leagueData && activeTab === "league-overview" && (
+            <LeagueTable leagueData={leagueData} teamID={teamID} onTeamClick={handleTeamClick} />
           )}
         </div>
       </div>
