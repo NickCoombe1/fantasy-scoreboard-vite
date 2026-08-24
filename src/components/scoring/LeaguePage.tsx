@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { LeagueData } from "@/models/league";
 import { ScoringData } from "@/models/scoringData";
 import Matchup from "@/components/scoring/Matchup";
@@ -25,21 +25,16 @@ export default function LeaguePage({ gameweek, leagueData, teamsScoringData, hig
   }, [teamsScoringData, leagueData.league_entries]);
 
   const matchRefs = useRef<Record<number, HTMLDivElement | null>>({});
-  const [flashTeamId, setFlashTeamId] = useState<number | null>(null);
 
-  // Scrolls to and briefly highlights the matchup for a team clicked from the
-  // League Overview tab. LeaguePage remounts every time the Scoring tab
-  // becomes active again (ScoringTabs only mounts one tab at a time), so this
-  // runs fresh on every "jump to matchup" click, even repeat clicks on the
-  // same team.
+  // Scrolls to the matchup for a team clicked from the League tab. LeaguePage
+  // remounts every time the Scoring tab becomes active again (ScoringTabs
+  // only mounts one tab at a time), so this runs fresh on every "jump to
+  // matchup" click, even repeat clicks on the same team.
   useEffect(() => {
     if (highlightedTeamId == null) return;
     const el = matchRefs.current[highlightedTeamId];
     if (!el) return;
     el.scrollIntoView({ behavior: "smooth", block: "center" });
-    setFlashTeamId(highlightedTeamId);
-    const timeout = setTimeout(() => setFlashTeamId(null), 2000);
-    return () => clearTimeout(timeout);
   }, [highlightedTeamId]);
 
   return (
@@ -57,8 +52,6 @@ export default function LeaguePage({ gameweek, leagueData, teamsScoringData, hig
               const team2Data = enrichedScoringData[team2.id];
               if (!team1Data || !team2Data) return <div key={index} className="text-red-500 text-center">Error: Scoring data missing.</div>;
 
-              const isFlashing = flashTeamId === team1.id || flashTeamId === team2.id;
-
               return (
                 <div
                   key={index}
@@ -66,9 +59,6 @@ export default function LeaguePage({ gameweek, leagueData, teamsScoringData, hig
                     matchRefs.current[team1.id] = el;
                     matchRefs.current[team2.id] = el;
                   }}
-                  className={`rounded-2xl transition-colors duration-700 ${
-                    isFlashing ? "bg-black/10 dark:bg-white/10 ring-2 ring-light-dark-blue" : ""
-                  }`}
                 >
                   <Matchup team={team1} opponent={team2} teamScoring={team1Data} opponentScoring={team2Data} />
                 </div>
