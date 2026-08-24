@@ -12,9 +12,7 @@ interface ScoringTabsProps {
   leagueData: LeagueData;
   teamsScoringData: Record<number, ScoringData>;
   gameweekInfo: GameStatusData;
-  isFetching: boolean;
   teamID?: number;
-  leagueID: number;
 }
 
 const SCORING_TAB_INDEX = 0;
@@ -23,9 +21,7 @@ export default function ScoringTabs({
   leagueData,
   teamsScoringData,
   gameweekInfo,
-  isFetching,
   teamID,
-  leagueID,
 }: ScoringTabsProps) {
   const [selectedIndex, setSelectedIndex] = useState(SCORING_TAB_INDEX);
   const [highlightedTeamId, setHighlightedTeamId] = useState<number | null>(null);
@@ -39,7 +35,7 @@ export default function ScoringTabs({
     <div className={"relative md:top-[-3.125rem]"}>
       <TabGroup selectedIndex={selectedIndex} onChange={setSelectedIndex}>
         <div className={"flex flex-col items-center gap-4"}>
-          <TabHeader leagueName={leagueData.league.name} tabs={["Scoring", "League Overview"]} />
+          <TabHeader leagueName={leagueData.league.name} tabs={["Scoring", "League"]} />
           <div className="h-[108px] md:h-[137px] flex-col justify-start items-center gap-4 flex my-6">
             {gameweekInfo && (
               <>
@@ -52,18 +48,11 @@ export default function ScoringTabs({
               </>
             )}
           </div>
-          {isFetching && (
-            <div className="text-center text-light-60 dark:text-dark-60 text-xs font-medium font-roobertMono uppercase tracking-wide animate-pulse">
-              Updating...
-            </div>
-          )}
-          {teamID && leagueID && (
-            <div className={"flex justify-center"}>
-              <RefreshButton />
-            </div>
-          )}
           <TabPanels className={"w-full"}>
             <TabPanel>
+              <div className={"flex justify-center pb-4"}>
+                <RefreshButton />
+              </div>
               {leagueData && gameweekInfo && (
                 <LeaguePage
                   leagueData={leagueData}

@@ -51,11 +51,11 @@ export default function LeaguePage({ gameweek, leagueData, teamsScoringData, hig
             .map((match, index) => {
               const team1 = leagueData.league_entries.find((t) => t.id === match.league_entry_1);
               const team2 = leagueData.league_entries.find((t) => t.id === match.league_entry_2);
-              if (!team1 || !team2) return <div key={index} className="text-red-500">Error: Team data missing.</div>;
+              if (!team1 || !team2) return <div key={index} className="text-red-500 text-center">Error: Team data missing.</div>;
 
               const team1Data = enrichedScoringData[team1.id];
               const team2Data = enrichedScoringData[team2.id];
-              if (!team1Data || !team2Data) return <div key={index} className="text-red-500">Error: Scoring data missing.</div>;
+              if (!team1Data || !team2Data) return <div key={index} className="text-red-500 text-center">Error: Scoring data missing.</div>;
 
               const isFlashing = flashTeamId === team1.id || flashTeamId === team2.id;
 

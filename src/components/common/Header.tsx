@@ -1,14 +1,12 @@
 import { ReactNode } from "react";
 import ThemeToggle from "@/components/utility/ThemeToggle";
-import { Link, useParams, useNavigate, useLocation } from "@tanstack/react-router";
-import StyledButton from "@/components/common/StyledButton";
-import About from "@/components/svg/About";
-import Menu from "@/components/svg/Menu";
+import { useParams, useNavigate, useLocation } from "@tanstack/react-router";
 import Logo from "@/components/svg/Logo";
 import { useTheme } from "@/hooks/useTheme";
+import { deleteCookie } from "@/lib/cookies";
 
 export default function Header(): ReactNode {
-  const { teamId } = useParams({ strict: false }) as { teamId?: string };
+  const { leagueId } = useParams({ strict: false }) as { leagueId?: string };
   const location = useLocation();
   const navigate = useNavigate();
   const { theme } = useTheme();
@@ -16,9 +14,17 @@ export default function Header(): ReactNode {
   //make the mob background transparent if the path is not /scoring as we have a header component that handles it for us
   const backgroundTransparent = !location.pathname.startsWith("/scoring/");
   const handleBackClick = () => {
-    if (teamId) navigate({ to: "/team/$teamId", params: { teamId } });
-    else if (window.history.length > 1) window.history.back();
-    else navigate({ to: "/" });
+    if (leagueId) {
+      // A team is only ever in one league, so there's no picker to go "back"
+      // to — clear the cached selection and return to the start.
+      deleteCookie("teamID");
+      deleteCookie("leagueID");
+      navigate({ to: "/" });
+    } else if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      navigate({ to: "/" });
+    }
   };
   return (
     <header className={"md:sticky top-0 z-[1000]"}>
@@ -38,18 +44,6 @@ export default function Header(): ReactNode {
           </div>
         </div>
         <div className="justify-start items-center gap-2 flex md:z-10">
-          {teamId && (
-            <Link to="/team/$teamId" params={{ teamId: teamId! }}>
-              <StyledButton label="MY LEAGUES" secondary={true} type="button">
-                My Leagues
-              </StyledButton>
-            </Link>
-          )}
-          <Link to="/about">
-            <StyledButton label="ABOUT" secondary={true} type={"button"}>
-              About
-            </StyledButton>
-          </Link>
           <ThemeToggle />
         </div>
       </div>
@@ -60,9 +54,9 @@ export default function Header(): ReactNode {
             : "bg-black/5 dark:bg-black/20"
         }`}
       >
-        <div className="w-full h-20 p-6 justify-between items-center inline-flex align-middle">
-          <ThemeToggle />
+        <div className="w-full h-20 p-6 relative flex items-center justify-end">
           <div
+            className="absolute left-1/2 -translate-x-1/2"
             onClick={handleBackClick}
             role="button"
             tabIndex={0}
@@ -73,24 +67,7 @@ export default function Header(): ReactNode {
           >
             <Logo mode={theme} />
           </div>
-          <div className="justify-start items-center gap-1 flex">
-            <div className="w-[35px] h-[35px] px-3.5 py-3 bg-button-light-bg-20  bg-button-light-secondary dark:bg-button-dark-bg bg-blend-overlay  rounded justify-center items-center gap-2.5 flex">
-              <div className="w-5 h-5 relative">
-                <Link to="/about" aria-label="About">
-                  <About mode={theme} />
-                </Link>
-              </div>
-            </div>
-            {teamId && (
-              <div className="w-[35px] h-[35px] px-3.5 py-3 bg-button-light-bg-20  bg-button-light-secondary dark:bg-button-dark-bg bg-blend-overlay  rounded flex-col justify-center items-center gap-[5px] inline-flex">
-                <Link to="/team/$teamId" params={{ teamId: teamId! }} aria-label="My Leagues">
-                  <div className="w-5 h-5 relative flex justify-center items-center">
-                    <Menu mode={theme} />
-                  </div>
-                </Link>
-              </div>
-            )}
-          </div>
+          <ThemeToggle />
         </div>
       </div>
     </header>

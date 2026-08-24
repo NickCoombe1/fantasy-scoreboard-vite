@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { leagueIDQueryOptions } from "@/api/queries";
 import TitleDesktop from "@/components/svg/TitleDesktop";
 import TitleMobile from "@/components/svg/TitleMobile";
 import ScoreboardDesktop from "@/components/svg/ScoreboardDesktop";
@@ -18,6 +20,7 @@ export const Route = createLazyFileRoute("/welcome")({
 
 function WelcomePage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { theme } = useTheme();
   const [teamInput, setTeamInput] = useState("");
   const [error, setError] = useState("");
@@ -34,7 +37,7 @@ function WelcomePage() {
 
     if (isFreshVisit && teamID && leagueID) {
       setLoading(true);
-      navigate({ to: `/scoring/${leagueID}/${teamID}` });
+      navigate({ to: `/scoring/${leagueID}` });
     }
   }, [navigate]);
 
@@ -49,9 +52,29 @@ function WelcomePage() {
       return;
     }
 
+    setError("");
+    setLoading(true);
+
     // Save teamID in cookies (30 days)
     setCookie("teamID", teamID, 30);
-    navigate({ to: `/team/${teamID}` });
+
+    try {
+      // A team can only be in one league, so skip straight to its scoring
+      // page instead of showing a league picker.
+      const data = await queryClient.fetchQuery(leagueIDQueryOptions(Number(teamID)));
+      const leagueID = data.entry.league_set[0];
+      if (!leagueID) {
+        setError("This team isn't in any leagues.");
+        setLoading(false);
+        return;
+      }
+      setCookie("leagueID", String(leagueID), 7);
+      navigate({ to: `/scoring/${leagueID}` });
+    } catch (err) {
+      console.error("Error fetching team data:", err);
+      setError("Failed to fetch team data. Please try again.");
+      setLoading(false);
+    }
   };
 
   return (
@@ -123,7 +146,7 @@ function WelcomePage() {
                   />
                 </div>{" "}
                 {error && (
-                  <p className="text-sm text-light-red dark:text-dark-red text-left">
+                  <p className="text-sm text-light-red dark:text-dark-red text-center">
                     {error}
                   </p>
                 )}

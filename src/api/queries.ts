@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { queryOptions, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   fetchGameWeekDetails,
   fetchLeagueData,
@@ -47,13 +47,19 @@ export function useBootstrap() {
   });
 }
 
-export function useLeagueID(teamId: number) {
-  return useQuery({
+// Exported so it can be shared between useLeagueID and an imperative
+// queryClient.prefetchQuery/fetchQuery call (e.g. kicking off the fetch on
+// the welcome page's submit, before the team page's lazy chunk even loads).
+export const leagueIDQueryOptions = (teamId: number) =>
+  queryOptions({
     queryKey: ["leagueID", teamId],
     queryFn: () => fetchLeagueID(teamId),
     staleTime: 24 * HOUR,
     enabled: !!teamId,
   });
+
+export function useLeagueID(teamId: number) {
+  return useQuery(leagueIDQueryOptions(teamId));
 }
 
 export function useGameWeekFixtures(gameweek: number) {

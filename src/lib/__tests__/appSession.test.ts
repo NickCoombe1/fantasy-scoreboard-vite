@@ -26,7 +26,7 @@ describe("appSession + router integration", () => {
     await router.load();
     expect(count).toBe(1);
 
-    await router.navigate({ to: "/about" });
+    await router.navigate({ to: "/" });
     expect(count).toBeGreaterThan(1);
 
     await router.navigate({ to: "/welcome" });

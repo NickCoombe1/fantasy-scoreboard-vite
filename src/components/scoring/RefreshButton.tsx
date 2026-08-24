@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useRefreshQueries } from "@/api/queries";
 import StyledButton from "@/components/common/StyledButton";
+import LoadingSpinner from "@/components/common/LoadingSpinner";
 
 export default function RefreshButton() {
   const refreshQueries = useRefreshQueries();
@@ -14,11 +15,11 @@ export default function RefreshButton() {
 
   return (
     <div className="flex flex-col items-center gap-2">
-      <StyledButton
-        label={isPending ? "Updating..." : "Update Scores"}
-        type="button"
-        onClick={handleRefresh}
-      />
+      {isPending ? (
+        <LoadingSpinner />
+      ) : (
+        <StyledButton label={"Update Scores"} type="button" onClick={handleRefresh} />
+      )}
     </div>
   );
 }
