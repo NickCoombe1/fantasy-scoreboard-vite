@@ -1,5 +1,12 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { processTeamData, type ScoringData } from "./fetchScoringData";
+import {
+  processTeamData,
+  type ScoringData,
+  type FplBootstrapResponse,
+  type PlayerDataResponse,
+  type FplTeamPicksResponse,
+  type Fixtures,
+} from "./_lib/scoring";
 
 interface LeagueEntry {
   entry_id: number;
@@ -10,31 +17,6 @@ interface LeagueEntry {
 interface LeagueDetailsResponse {
   league_entries: LeagueEntry[];
   [key: string]: unknown;
-}
-
-interface FplBootstrapResponse {
-  elements: Array<{
-    id: number;
-    web_name: string;
-    team: number;
-    element_type: number;
-    chance_of_playing_this_round: number | null;
-  }>;
-}
-
-interface PlayerDataResponse {
-  elements: Record<number, { stats: Record<string, unknown>; explain: unknown }>;
-}
-
-interface FplTeamPicksResponse {
-  picks: Array<{ id: number; element: number; position: number; multiplier: number }>;
-}
-
-interface Fixture {
-  team_a: number;
-  team_h: number;
-  finished: boolean;
-  started: boolean;
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -72,7 +54,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }),
       fetch(`https://draft.premierleague.com/api/event/${gameweekNumber}/fixtures`).then((r) => {
         if (!r.ok) throw new Error("Failed to fetch fixture data");
-        return r.json() as Promise<Fixture[]>;
+        return r.json() as Promise<Fixtures>;
       }),
       ...teamEntries.map((entry) =>
         fetch(
@@ -91,10 +73,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (!teamData) continue;
       const entry = teamEntries[i]!;
       results[entry.id] = await processTeamData(
-        bootstrapData as never,
-        scoringData as never,
+        bootstrapData,
+        scoringData,
         teamData,
-        gameweekFixtureData as never,
+        gameweekFixtureData,
       );
     }
 

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { processTeamData } from "../fetchScoringData";
+import { processTeamData } from "../_lib/scoring";
 
 /**
  * Performance benchmarks for processTeamData — the full server-side pipeline:

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { getGameStatus, mapBootstrapData, processTeamData } from "../fetchScoringData";
+import { getGameStatus, mapBootstrapData, processTeamData } from "../_lib/scoring";
 
 // ---- Helpers for building test data ----
 
