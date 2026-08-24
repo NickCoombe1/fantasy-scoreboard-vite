@@ -20,7 +20,6 @@ export default function LeagueTable({ leagueData, teamID, onTeamClick }: LeagueT
       <table className="w-full text-center border-collapse">
         <thead>
           <tr className="text-light-60 dark:text-dark-60 text-xs font-medium font-roobertMono uppercase tracking-wide">
-            <th className="px-2 py-2">Rank</th>
             <th className="px-2 py-2 text-left">Team</th>
             <th className="px-2 py-2">P</th>
             <th className="px-2 py-2">W</th>
@@ -42,7 +41,6 @@ export default function LeagueTable({ leagueData, teamID, onTeamClick }: LeagueT
                   isOwnTeam ? "bg-black/10 dark:bg-white/10" : ""
                 }`}
               >
-                <td className="px-2 py-3">{standing.rank}</td>
                 <td className="px-2 py-3 text-left">{entry.entry_name ?? "Unknown"}</td>
                 <td className="px-2 py-3">{standing.matches_played}</td>
                 <td className="px-2 py-3">{standing.matches_won}</td>
