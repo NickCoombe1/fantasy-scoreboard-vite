@@ -4,7 +4,7 @@ import { FplTeamResponse } from "@/models/fplTeamResponse";
 import { LeagueData } from "@/models/league";
 import StyledButton from "@/components/common/StyledButton";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
-import { setCookie } from "@/lib/cookies";
+import { deleteCookie, setCookie } from "@/lib/cookies";
 import { Button } from "@headlessui/react";
 
 export const Route = createLazyFileRoute("/team/$teamId")({
@@ -79,6 +79,12 @@ function TeamPage() {
     }
   };
 
+  const handleBackToHomepage = () => {
+    deleteCookie("teamID");
+    deleteCookie("leagueID");
+    navigate({ to: "/" });
+  };
+
   if (error) {
     return (
       <div className="min-h-[80vh] flex items-center justify-center">
@@ -112,7 +118,7 @@ function TeamPage() {
         <StyledButton
           label={"BACK TO HOMEPAGE"}
           type={"submit"}
-          onClick={() => navigate({ to: "/" })}
+          onClick={handleBackToHomepage}
         />
       </div>
     </div>
